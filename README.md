@@ -102,6 +102,3 @@ El nodo central que define el comportamiento del asistente:
 - Usar nombres claros en los nodos para facilitar mantenimiento.  
 - Validar credenciales de Google, Pinecone y OpenAI antes de activar el flujo.  
 
----
-
-## 📂 Estructura del Repositorio
