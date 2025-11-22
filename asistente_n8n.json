@@ -1,0 +1,537 @@
+{
+  "name": "w11 a&q",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        500
+      ],
+      "id": "3c2f17d6-4e80-4a1b-b993-8f20d6d4d70e",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3020,
+        500
+      ],
+      "id": "4404985d-d630-4c80-af27-d56217d45b31",
+      "name": "descargar3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9Epp0LXwWDTdiCO7",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3240,
+        500
+      ],
+      "id": "7b5e7e96-3217-4807-bddf-ef0a581480b7",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3460,
+        720
+      ],
+      "id": "84eee35f-2791-4bdf-9fe4-20f4b39e3e4c",
+      "name": "Embeddings OpenAI7",
+      "credentials": {
+        "openAiApi": {
+          "id": "nMWs9kE7kD4cAe5w",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        722.5
+      ],
+      "id": "031614bb-421c-49a0-9e7e-168e37de3da6",
+      "name": "Default Data Loader7"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        3668,
+        920
+      ],
+      "id": "af12964f-4ca7-4cfc-b9ee-6fd14bb542d5",
+      "name": "Recursive Character Text Splitter7"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1gkYR4hAJC-gUSQTAQ8o4x-GzY6Puyyso",
+            "mode": "list",
+            "cachedResultName": "archivospdf",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1gkYR4hAJC-gUSQTAQ8o4x-GzY6Puyysa - AQUÌ ESTAN LOS ARCHIVOS PDF DEL CURSO DE MATEMATICA APLICADA QUE SE SUBEN PARA SER INDEXADOS EN PINECONE"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2800,
+        500
+      ],
+      "id": "74544bb1-92d9-40ac-884e-431f4b925ea8",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9Epp0LXwWDTdiCO7",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "archivos",
+          "mode": "list",
+          "cachedResultName": "archivos"
+        },
+        "options": {
+          "pineconeNamespace": "pdf"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        3476,
+        500
+      ],
+      "id": "6a0331fc-72ce-439f-8c82-371135a412bd",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "K1iwlwosIZFW3POC",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        2580,
+        1160
+      ],
+      "id": "0debddfd-e2ed-4535-b312-c6b6f22a4617",
+      "name": "When chat message received",
+      "webhookId": "765f2508-f318-4a5f-a02c-285d879dabb1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# 🧑‍🏫 Rol\nEres un agente académico virtual especializado en Matemática Aplicada llamada Pao. Tu misión es guiar al estudiante ofreciendo explicaciones claras, útiles y amables sobre los temas tratados, ejercicios de clase, y preguntas de exámenes pasados.\nEres cálido, formal y empático, y acompañas al estudiante como si fueras su compañero de estudio digital. Utilizas emojis cuando es apropiado para hacer más amigable la interacción.\n\n# 🧰 Herramientas disponibles\n- resgistro_alumnos : contiene los los registros de los alumnos del curso.\n- silabo: contiene nombres de las unidades, temas del curso. link de archivos de clase y exámenes.\n- Pinecone Vector Store: responder consultas de los alumnos.\n\n\n#🎯 Flujo de atención\n1.- Al iniciar la conversación, el chatbot recibirá un codigo de alumno que es numérico , caso conrario debe solicitar el código de alumno como primer dato obligatorio.\n\n2.- El código debe ser verificado en la herramienta de google sheet  resgistro_alumnos:\n\n  2.1.- 📛 Si el código NO se encuentra en los registros:\n    2.1.1.- Mostrar este mensaje estándar sin dar explicaciones técnicas:\n      \"Código ingresado es inválido, vuelva a intentarlo.\"\n    2.1.2.- No se atienden solicitudes de usuarios no registrados.\n\n  2.2.- ✅ Si el código SÍ se encuentra en los registros:\n    2.2.1.- Saludar cordialmente usando el nombre completo y código del alumno.\n    2.2.2.- Mostrar los temas desarrollados en el curso utilizando la herramienta silabo, extrayendo las columnas UNIDAD y TEMAS.\n    Por ejemplo:\n      \"Hola, [APELLIDOS Y NOMBRES - CÓDIGO DE ALUMNO] 👋 Estos son los temas disponibles de Matemática Aplicada:\"\n    2.2.3.- Solo los Subtemas de cada unidad deben estar enumeradas, por ejemplo para la \"unidad 1\" los subtemas deben estar enumeradas con saltos de línea:\n      * 1.1 primer subtema \n      * 1.2 segundo subtema \n    y así sucesivamente. Y lo mas importante cada enumeración debe empezar en una nueva linea para que tenga una buena estructura a la hora de mostrar al usuario.\n    2.2.4.- 🧠 El chatbot responde exclusivamente consultas usando Recuperación Aumentada Generativa (RAG) basada en la herramienta Pinecone Vector Store.\n\n\n# 🧠 Consultas académicas con entrega de recursos\nCuando el alumno realiza una pregunta sobre algún subtema del curso:\n1.- La respuesta académica se genera usando exclusivamente Pinecone Vector Store mediante técnica RAG.\n2.- Si el subtema de la pregunta coincide con alguno registrado en el silabo, y existe un archivo vinculado (LINK-TEORIA para teoría o LINK-EXAMEN para examen), también se entrega el recurso como apoyo adicional.\n- Ejemplo de respuesta:\n\"🧮 Para el subtema 2.3 Derivadas, aquí tienes una explicación: [respuesta RAG]\n📄 Además, puedes revisar este archivo de teoría: nombre\n📝 Y este es el examen de práctica disponible: nombre\"\n\n3.- Si no hay recurso disponible en el silabo para ese tema, se responde únicamente con la explicación usando RAG.\n\n#📎 Entrega de recursos según la consulta\n- Esta función es reactiva: el asistente detecta el tema de la pregunta y si hay material disponible, lo comparte automáticamente.\n- Se utilizan los nombres y links extraídos de la herramienta silabo.\n\n\n# Formato matemático\n- Las fórmulas en línea (dentro de un párrafo), como variables, expresiones cortas o símbolos ($a_n$, $\\epsilon > 0$, $n \\geq N$, etc.), deben ir encerradas entre un solo signo de dólar: $...$.\nEjemplo:\n\"Sea la sucesión $a_n$ tal que $a_n = \\frac{1}{n}$.\"\n- Las fórmulas en bloque deben ir separadas y entre doble signo de dólar.\nEjemplo:\n$$\\sum_{k=1}^{n} a_k = \\frac{n(n+1)}{2}$$\n- No uses \"^\", \"*\", ASCII-art ni estructuras matemáticas en texto plano. Todo debe estar expresado usando notación LaTeX bien formada.\n- No pongas el código LaTeX escapado ni dentro de \"<code>\" ni con doble backslash (\"\\\\\") innecesariamente.\n\npor ejemplo:\nPasar de [ (x - h)^2 + (y - k)^2 = r^2 ] a \n$$\n (x - h)^2 + (y - k)^2 = r^2\n$$\n\n\n# Importante\n- Solo los alumnos registrado en el curso pueden hacer uso (hacer todas las preguntas y peticiones que quieran) del asistente por eso primero se busca en base al código de alumno para verificar si es o no del curso.\n- La primera entrada que recibe el chatbot al ser abierto es un código, que tiene que ser verificado en tool de google sheet resgistro_alumnos.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2952,
+        1160
+      ],
+      "id": "56772fda-c219-4c77-b38f-4ce3e3f9346a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10P6dwWeHyH15zBvha9w7NYYLLD90ulsqhWEvMiYPFU4",
+          "mode": "list",
+          "cachedResultName": "silabo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10P6dwWeHyH15zBvha9w7NYYLLD90ulsqhWEvMiYPFU4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1792491154,
+          "mode": "list",
+          "cachedResultName": "registros",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10P6dwWeHyH15zBvha9w7NYYLLD90ulsqhWEvMiYPFU4/edit#gid=1792491154"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "CODIGO",
+              "lookupValue": "={{ $json.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        3040,
+        1380
+      ],
+      "id": "33c12540-a19f-4366-a6a3-f449270542ee",
+      "name": "resgistro_alumnos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MnOpKIzCvjQV0NJx",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_chat_histories_rag0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2920,
+        1380
+      ],
+      "id": "e0853637-8c8a-4708-b21b-5aee6f08d366",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "dW1YkQdaFatON180",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10P6dwWeHyH15zBvha9w7NYYLLD90ulsqhWEvMiYPFU4",
+          "mode": "list",
+          "cachedResultName": "silabo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/-RESEÑA DE LAS UNIDADES DEL SILABO"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2021652011,
+          "mode": "list",
+          "cachedResultName": "silabo_mate",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-- UBICACION DEL SILABO"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        3180,
+        1380
+      ],
+      "id": "872e3a75-67e9-4ca3-bf11-927e9cc57eda",
+      "name": "silabo_temas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MnOpKIzCvjQV0NJx",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3368,
+        1580
+      ],
+      "id": "53136c91-bf58-4070-94bd-815e4d97fec9",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "nMWs9kE7kD4cAe5w",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2760,
+        1380
+      ],
+      "id": "682a657b-71ce-45bc-b7ba-8428195bd28b",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "nMWs9kE7kD4cAe5w",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "base_de_conocimiento",
+        "toolDescription": "Usas Pinecone Vector Store , el indice archivos donde tienes archivos de clase de Matemática Aplicada para responder las consultas, ya sea teoria, ejemplos, ejercicios propuestos y/o ejercicios tipo exámenes pasados, de los alumnos registrados.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "archivos",
+          "mode": "list",
+          "cachedResultName": "archivos"
+        },
+        "options": {
+          "pineconeNamespace": "pdf"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        3280,
+        1382.5
+      ],
+      "id": "03addb1c-73d5-4c0b-a621-1a558423916c",
+      "name": "Pinecone Vector Store3",
+      "credentials": {
+        "pineconeApi": {
+          "id": "K1iwlwosIZFW3POC",
+          "name": "PineconeApi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "descargar3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI7": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader7": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter7": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader7",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "descargar3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resgistro_alumnos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "silabo_temas": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "13df880c-2b68-48b8-aee5-0d94db593849",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "89eba00fd1c384f393d5b3a3bcd723b016314eb94a9a80c88864d6e0afc06698"
+  },
+  "id": "3qUaxvRQpNV8MH5k",
+  "tags": []
+}
